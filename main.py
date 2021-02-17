@@ -30,7 +30,6 @@ def getAPOD():
     # Get the HD image if there is one
     if "hdurl" in data:
         hdURL = data["hdurl"]
-        print(hdURL)
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + hdURL
     else: # Use the standard image url instead
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + url
