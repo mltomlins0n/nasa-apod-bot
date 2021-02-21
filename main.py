@@ -10,7 +10,7 @@ client = discord.Client()
 # Make items in the .env accessible
 load_dotenv()
 
-# The URL to grab apod from 
+# The URL to grab apod from
 URL = "https://api.nasa.gov/planetary/apod?&thumbs=true&api_key="
 # TODO: make URL for returning X random pics
 @client.event
