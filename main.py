@@ -19,6 +19,7 @@ async def on_ready():
     # Set the bot's presence info
     await client.change_presence(activity = discord.Game("with spacetime"))
 
+# TODO: Make this function run once a day at a certain time
 def getAPOD():
     response = requests.get(URL + os.getenv("API_KEY"))
     data = json.loads(response.text)
