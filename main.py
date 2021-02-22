@@ -35,6 +35,9 @@ def getAPOD():
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + url
     return discordMessage
 
+# TODO: Create function to post to discord
+# def post_in_discord():
+
 @client.event
 # test function to confirm the bot is working
 async def on_message(message):
