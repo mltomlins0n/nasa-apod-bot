@@ -11,7 +11,7 @@ client = discord.Client()
 load_dotenv()
 
 # The URL to grab apod from
-URL = "https://api.nasa.gov/planetary/apod?&thumbs=true&api_key="
+URL = "https://api.nasa.gov/planetary/apod?&api_key="
 # TODO: make URL for returning X random pics
 @client.event
 async def on_ready():
