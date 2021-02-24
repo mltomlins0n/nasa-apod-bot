@@ -19,7 +19,7 @@ multiplePicsRequest = requests.get(URL + os.getenv("API_KEY") + "&count=3")
 async def on_ready():
     print("logged in as {0.user}".format(client))
     # Set the bot's presence info
-    await client.change_presence(activity = discord.Game("with spacetime"))
+    await client.change_presence(activity = discord.Game("with spacetime :telescope:"))
 
 # TODO: Make this function run once a day at a certain time
 '''
