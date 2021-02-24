@@ -12,7 +12,9 @@ load_dotenv()
 
 # The URL to grab apod from
 URL = "https://api.nasa.gov/planetary/apod?&api_key="
-# TODO: make URL for returning X random pics
+request = requests.get(URL + os.getenv("API_KEY"))
+multiplePicsRequest = requests.get(URL + os.getenv("API_KEY") + "&count=3")
+
 @client.event
 async def on_ready():
     print("logged in as {0.user}".format(client))
@@ -20,8 +22,11 @@ async def on_ready():
     await client.change_presence(activity = discord.Game("with spacetime"))
 
 # TODO: Make this function run once a day at a certain time
-def getAPOD():
-    response = requests.get(URL + os.getenv("API_KEY"))
+'''
+Parse the response from the API and create a discord message
+Param: response - the response from the API request
+'''
+def getAPOD(response):
     data = json.loads(response.text)
     date = data["date"]
     title = data["title"]
@@ -39,17 +44,17 @@ def getAPOD():
 # def post_in_discord():
 
 @client.event
-# test function to confirm the bot is working
 async def on_message(message):
     # Stop the bot from replying to itself
     if message.author == client.user:
         return
     
+    # test to confirm the bot is online
     if message.content.startswith("!test"):
-        await message.channel.send("I'm alive")
+        await message.channel.send("I'm alive :thumbsup:")
 
     if message.content.startswith("!apod"):
-        apod = getAPOD()
+        apod = getAPOD(request)
         await message.channel.send(">>> " + apod)
 
 # Run the web server
