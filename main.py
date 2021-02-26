@@ -2,6 +2,7 @@ import discord
 import os
 import requests
 import json
+import asyncio
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -21,10 +22,9 @@ async def on_ready():
     # Set the bot's presence info
     await client.change_presence(activity = discord.Game("with spacetime 🔭 🪐"))
 
-# TODO: Make this function run once a day at a certain time
 '''
-Parse the response from the API and create a discord message
-Param: response - the response from the API request
+#Parse the response from the API and create a discord message
+#Param: response - the response from the API request
 '''
 def getAPOD(response):
     data = json.loads(response.text)
@@ -40,8 +40,16 @@ def getAPOD(response):
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + url
     return discordMessage
 
-# TODO: Create function to post to discord
-# def post_in_discord():
+async def post_to_discord():
+    await client.wait_until_ready()
+    counter = 0
+    channel = client.get_channel(811674409861382214) # nasa apod channel
+    apod = getAPOD(request)
+    while not client.is_closed():
+        counter += 1
+        #await channel.send("test " + str(counter))
+        await channel.send(">>> " + apod)
+        await asyncio.sleep(5) # Task runs every X seconds
 
 @client.event
 async def on_message(message):
@@ -59,5 +67,7 @@ async def on_message(message):
 
 # Run the web server
 keep_alive()
+# create the background task and run it in the background
+bg_task = client.loop.create_task(post_to_discord())
 # Run the bot
 client.run(os.getenv("TOKEN"))
