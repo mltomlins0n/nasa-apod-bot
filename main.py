@@ -49,7 +49,7 @@ async def post_to_discord():
         counter += 1
         #await channel.send("test " + str(counter))
         await channel.send(">>> " + apod)
-        await asyncio.sleep(5) # Task runs every X seconds
+        await asyncio.sleep(24*60*60) # Task runs every 24 hours
 
 @client.event
 async def on_message(message):
