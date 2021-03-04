@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import asyncio
+import datetime
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -11,10 +12,7 @@ client = discord.Client()
 # Make items in the .env accessible
 load_dotenv()
 
-# The URL to grab apod from
-URL = "https://api.nasa.gov/planetary/apod?&api_key="
-request = requests.get(URL + os.getenv("API_KEY"))
-multiplePicsRequest = requests.get(URL + os.getenv("API_KEY") + "&count=3")
+#multiplePicsRequest = requests.get(URL + os.getenv("API_KEY") + "&count=3")
 
 @client.event
 async def on_ready():
@@ -22,12 +20,20 @@ async def on_ready():
     # Set the bot's presence info
     await client.change_presence(activity = discord.Game("with spacetime 🔭 🪐"))
 
+# Get today's date to pass to get_apod so that it gets the correct pic every day
+def get_date():
+    api_date = datetime.date.today()
+    return api_date
+
 '''
 #Parse the response from the API and create a discord message
 #Param: response - the response from the API request
 '''
-def getAPOD(response):
-    data = json.loads(response.text)
+def get_apod(api_date):
+    # The URL to grab apod from
+    url = "https://api.nasa.gov/planetary/apod?&api_key={}&date={}".format(os.getenv("API_KEY"), api_date)
+    request = requests.get(url)
+    data = json.loads(request.text)
     date = data["date"]
     title = data["title"]
     explanation = data["explanation"]
@@ -44,7 +50,7 @@ async def post_to_discord():
     await client.wait_until_ready()
     counter = 0
     channel = client.get_channel(811674409861382214) # nasa apod channel
-    apod = getAPOD(request)
+    apod = get_apod(get_date())
     while not client.is_closed():
         counter += 1
         #await channel.send("test " + str(counter))
@@ -62,7 +68,7 @@ async def on_message(message):
         await message.channel.send("I'm alive :thumbsup:")
 
     if message.content.startswith("!apod"):
-        apod = getAPOD(request)
+        apod = get_apod(get_date())
         await message.channel.send(">>> " + apod)
 
 # Run the web server
