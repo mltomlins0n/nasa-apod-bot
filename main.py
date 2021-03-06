@@ -12,15 +12,17 @@ client = discord.Client()
 # Make items in the .env accessible
 load_dotenv()
 
-#multiplePicsRequest = requests.get(URL + os.getenv("API_KEY") + "&count=3")
-
 @client.event
 async def on_ready():
     print("logged in as {0.user}".format(client))
     # Set the bot's presence info
     await client.change_presence(activity = discord.Game("with spacetime 🔭 🪐"))
 
-# Get today's date to pass to get_apod so that it gets the correct pic every day
+'''
+Get today's date to pass to get_apod so that it gets the correct pic every day
+current_date will be set when the bot is run and needs to be incremented
+using datetime.timedelta
+'''
 def get_date():
     # open file to store dates
     with open("dates.json", "r") as f:
@@ -30,7 +32,7 @@ def get_date():
     
     while True: # If current date is yesterday, get today's date
         if current_date.strftime("%F") in posted["dates"]:
-            current_date += datetime.timedelta(1)
+            current_date += datetime.timedelta(1) # Add 1 day to get today's date
         else:
             break
 
@@ -71,12 +73,9 @@ Gets the appropriate discord channel and posts the message
 '''
 async def post_to_discord():
     await client.wait_until_ready()
-    counter = 0
     channel = client.get_channel(811674409861382214) # nasa apod channel
     apod = get_apod(get_date())
     while not client.is_closed():
-        counter += 1
-        #await channel.send("test " + str(counter))
         await channel.send(">>> " + apod)
         await asyncio.sleep(24*60*60) # Task runs every 24 hours
 
