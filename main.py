@@ -22,7 +22,26 @@ async def on_ready():
 
 # Get today's date to pass to get_apod so that it gets the correct pic every day
 def get_date():
-    api_date = datetime.date.today()
+    # open file to store dates
+    with open("dates.json", "r") as f:
+        posted = json.load(f)
+    
+    current_date = datetime.date.today()
+    
+    while True: # If current date is yesterday, get today's date
+        if current_date.strftime("%F") in posted["dates"]:
+            current_date += datetime.timedelta(1)
+        else:
+            break
+
+    # save the new current date
+    api_date = current_date.strftime("%F")
+    # add date to file
+    posted["dates"].append(api_date)
+    
+    # write back to file
+    with open("dates.json", "w") as f:
+        json.dump(posted, f)
     return api_date
 
 '''
