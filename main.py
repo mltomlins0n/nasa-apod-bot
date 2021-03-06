@@ -45,8 +45,9 @@ def get_date():
     return api_date
 
 '''
-#Parse the response from the API and create a discord message
-#Param: response - the response from the API request
+Parse the response from the API and create a discord message
+Param: response - the response from the API request
+Returns: discordMessage - the formatted message to put in the discord
 '''
 def get_apod(api_date):
     # The URL to grab apod from
@@ -65,6 +66,9 @@ def get_apod(api_date):
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + url
     return discordMessage
 
+'''
+Gets the appropriate discord channel and posts the message
+'''
 async def post_to_discord():
     await client.wait_until_ready()
     counter = 0
