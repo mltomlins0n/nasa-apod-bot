@@ -32,7 +32,7 @@ def get_date():
     
     while True: # If current date is yesterday, get today's date
         if current_date.strftime("%F") in posted["dates"]:
-            current_date += datetime.timedelta(1) # Add 1 day to get today's date
+            current_date -= datetime.timedelta(1)
         else:
             break
 
@@ -90,7 +90,8 @@ async def on_message(message):
         await message.channel.send("I'm alive :thumbsup:")
 
     if message.content.startswith("!apod"):
-        apod = get_apod(get_date())
+        current_date = datetime.date.today()
+        apod = get_apod(current_date)
         await message.channel.send(">>> " + apod)
 
 # Run the web server
