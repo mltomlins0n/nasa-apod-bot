@@ -32,7 +32,7 @@ def get_date():
     
     while True: # If current date is yesterday, get today's date
         if current_date.strftime("%F") in posted["dates"]:
-            current_date -= datetime.timedelta(1)
+            current_date += datetime.timedelta(1)
         else:
             break
 
