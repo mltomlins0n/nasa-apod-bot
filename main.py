@@ -30,13 +30,11 @@ def get_date():
     
     current_date = datetime.date.today()
     
-    '''
     while True: # If current date is yesterday, get today's date
         if current_date.strftime("%F") in posted["dates"]:
             current_date += datetime.timedelta(1)
         else:
             break
-    '''
 
     # save the new current date
     api_date = current_date.strftime("%F")
