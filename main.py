@@ -74,8 +74,8 @@ Gets the appropriate discord channel and posts the message
 async def post_to_discord():
     await client.wait_until_ready()
     channel = client.get_channel(811674409861382214) # nasa apod channel
-    apod = get_apod(get_date())
     while not client.is_closed():
+        apod = get_apod(get_date())
         await channel.send(">>> " + apod)
         await asyncio.sleep(24*60*60) # Task runs every 24 hours
 
