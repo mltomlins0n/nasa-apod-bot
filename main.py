@@ -19,31 +19,24 @@ async def on_ready():
     await client.change_presence(activity = discord.Game("with spacetime 🔭 🪐"))
 
 '''
-Get today's date to pass to get_apod so that it gets the correct pic every day
-current_date will be set when the bot is run and needs to be incremented
-using datetime.timedelta
+Get today's date to pass to get_apod, and write it to a file
+to have a record of posted pics
 '''
 def get_date():
     # open file to store dates
     with open("dates.json", "r") as f:
-        posted = json.load(f)
+        posts = json.load(f)
     
     current_date = datetime.date.today()
-    
-    while True: # If current date is yesterday, get today's date
-        if current_date.strftime("%F") in posted["dates"]:
-            current_date += datetime.timedelta(1)
-        else:
-            break
 
     # save the new current date
     api_date = current_date.strftime("%F")
     # add date to file
-    posted["dates"].append(api_date)
+    posts["dates"].append(api_date)
     
     # write back to file
     with open("dates.json", "w") as f:
-        json.dump(posted, f)
+        json.dump(posts, f)
     return api_date
 
 '''
