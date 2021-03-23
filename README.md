@@ -6,9 +6,9 @@ When run, the bot will get today's Astronomy Pic of the Day and post it in the c
 
 ## Commands:
 
-`!test` - Get a response from the bot to make sure it's online
+`!test` - Get a response from the bot to make sure it's online.
 
-`!apod` - Get today's Astronomy Pic of the Day
+`!apod` - Get today's Astronomy Pic of the Day.
 
 `!archive` - Get every pic from today's date to the date of the first submission (16/06/1995) 
 **WARNING - This will return over 9000 results and spam the channel for about 3 hours. I only made this command to see if I could.**
