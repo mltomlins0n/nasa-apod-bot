@@ -3,7 +3,8 @@ import os
 import requests
 import json
 import asyncio
-import datetime
+import time
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -27,7 +28,7 @@ def get_date():
     with open("dates.json", "r") as f:
         posts = json.load(f)
     
-    current_date = datetime.date.today()
+    current_date = datetime.today()
 
     # save the new current date
     api_date = current_date.strftime("%F")
@@ -72,6 +73,28 @@ async def post_to_discord():
         await channel.send(">>> " + apod)
         await asyncio.sleep(24*60*60) # Task runs every 24 hours
 
+'''
+Get all pics from current date to the first pic
+'''
+async def get_archive():
+    current_date = datetime.today()
+    api_date = current_date.strftime("%Y-%m-%d")
+    channel = client.get_channel(823996688002842644) # archive channel
+    while api_date != "1995-06-15":
+        try:
+            apod = get_apod(api_date)
+            # convert api_date to a datetime object so it can be decremented
+            date_obj = datetime.strptime(api_date, "%Y-%m-%d")
+            # Decrement the date to get the previos pic
+            date_obj -= timedelta(1)
+            # convert back to string to get_apod() works
+            api_date = date_obj.strftime("%Y-%m-%d")
+            await channel.send(">>> " + apod)
+        except KeyError:
+            await channel.send(">>> " + "No data available for date: " + api_date)
+            date_obj -= timedelta(1)
+            api_date = date_obj.strftime("%Y-%m-%d")
+
 @client.event
 async def on_message(message):
     # Stop the bot from replying to itself
@@ -83,9 +106,12 @@ async def on_message(message):
         await message.channel.send("I'm alive :thumbsup:")
 
     if message.content.startswith("!apod"):
-        current_date = datetime.date.today()
+        current_date = datetime.today()
         apod = get_apod(current_date)
         await message.channel.send(">>> " + apod)
+
+    if message.content.startswith("!archive"):
+        await get_archive()
 
 # Run the web server
 keep_alive()
