@@ -79,8 +79,8 @@ Get all pics from current date to the first pic
 async def get_archive():
     current_date = datetime.today()
     api_date = current_date.strftime("%Y-%m-%d")
-    channel = client.get_channel(824307826729287731) # archive channel
-    while api_date != "1995-06-15":
+    channel = client.get_channel(825045193375744011) # archive channel
+    while api_date != "1995-06-15": # 1995-06-15 to get every pic
         try:
             apod = get_apod(api_date)
             # convert api_date to a datetime object so it can be decremented
@@ -94,7 +94,7 @@ async def get_archive():
             await channel.send(">>> " + "No data available for date: " + api_date)
             date_obj -= timedelta(1)
             api_date = date_obj.strftime("%Y-%m-%d")
-        time.sleep(0.5)
+        time.sleep(0.2)
 
 @client.event
 async def on_message(message):
@@ -107,8 +107,7 @@ async def on_message(message):
         await message.channel.send("I'm alive :thumbsup:")
 
     if message.content.startswith("!apod"):
-        current_date = datetime.today()
-        apod = get_apod(current_date)
+        apod = get_apod(get_date())
         await message.channel.send(">>> " + apod)
 
     if message.content.startswith("!archive"):
@@ -117,6 +116,6 @@ async def on_message(message):
 # Run the web server
 keep_alive()
 # create the background task and run it in the background
-#bg_task = client.loop.create_task(post_to_discord())
+bg_task = client.loop.create_task(post_to_discord())
 # Run the bot
 client.run(os.getenv("TOKEN"))
