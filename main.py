@@ -53,13 +53,15 @@ def get_apod(api_date):
     date = data["date"]
     title = data["title"]
     explanation = data["explanation"]
-    url = data["url"]
     # Get the HD image if there is one
     if "hdurl" in data:
         hdURL = data["hdurl"]
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + hdURL
-    else: # Use the standard image url instead
+    elif "url" in data: # Use the standard image url instead
+        url = data["url"]
         discordMessage = title + " " + date + "\n\n" + explanation + "\n\n" + url
+    else: # For pics without urls
+        discordMessage = title + " " + date + "\n\n" + explanation
     return discordMessage
 
 '''
@@ -92,9 +94,10 @@ async def get_archive():
             await channel.send(">>> " + apod)
         except KeyError:
             await channel.send(">>> " + "No data available for date: " + api_date)
+            date_obj = datetime.strptime(api_date, "%Y-%m-%d")
             date_obj -= timedelta(1)
             api_date = date_obj.strftime("%Y-%m-%d")
-        time.sleep(0.2)
+        time.sleep(0.5)
 
 @client.event
 async def on_message(message):
