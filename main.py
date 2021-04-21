@@ -6,7 +6,7 @@ import asyncio
 import time
 import random
 import datetime
-from datetime import date, timedelta
+from datetime import timedelta
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
