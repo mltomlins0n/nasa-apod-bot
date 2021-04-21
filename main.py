@@ -4,7 +4,9 @@ import requests
 import json
 import asyncio
 import time
-from datetime import datetime, timedelta
+import random
+import datetime
+from datetime import date, timedelta
 from dotenv import load_dotenv
 from keep_alive import keep_alive
 
@@ -22,13 +24,14 @@ async def on_ready():
 '''
 Get today's date to pass to get_apod, and write it to a file
 to have a record of posted pics
+Retuns: api_date - a date string used in the API call
 '''
 def get_date():
     # open file to store dates
     with open("dates.json", "r") as f:
         posts = json.load(f)
     
-    current_date = datetime.today()
+    current_date = datetime.date.today()
 
     # save the new current date
     api_date = current_date.strftime("%F")
@@ -39,6 +42,21 @@ def get_date():
     with open("dates.json", "w") as f:
         json.dump(posts, f)
     return api_date
+
+'''
+Generates a random date which gets a random apod when passed to the API
+Returns: rand_date - a random date string to be used in the API call
+'''
+def get_random_date():
+    start_date = datetime.date(1995, 6, 16) # First NASA apod image
+    end_date = datetime.date.today()
+    time_delta = end_date - start_date # Get the diff between start and end dates
+    days_delta = time_delta.days # Convert to an int
+    # Generate random int between start and end date
+    rand_days = random.randrange(days_delta)
+    rand_date = start_date + timedelta(days=rand_days) # Convert to a datetime object
+    rand_date = rand_date.strftime("%F") # Convert to a string for the API
+    return rand_date
 
 '''
 Parse the response from the API and create a discord message
@@ -66,10 +84,11 @@ def get_apod(api_date):
 
 '''
 Gets the appropriate discord channel and posts the message
+Params: - channel_id - the ID of the discord channel to post in
 '''
-async def post_to_discord():
+async def post_to_discord(channel_id):
     await client.wait_until_ready()
-    channel = client.get_channel(811674409861382214) # nasa apod channel
+    channel = client.get_channel(channel_id) # nasa apod channel
     while not client.is_closed():
         apod = get_apod(get_date())
         await channel.send(">>> " + apod)
@@ -116,9 +135,13 @@ async def on_message(message):
     if message.content.startswith("!archive"):
         await get_archive()
 
+    if message.content.startswith("!random"):
+        apod = get_apod(get_random_date())
+        await message.channel.send(">>> " + apod)
+
 # Run the web server
 keep_alive()
-# create the background task and run it in the background
-bg_task = client.loop.create_task(post_to_discord())
+# create the background task and run it
+bg_task = client.loop.create_task(post_to_discord(811674409861382214))
 # Run the bot
 client.run(os.getenv("TOKEN"))
