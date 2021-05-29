@@ -14,3 +14,7 @@ When run, the bot will get today's Astronomy Pic of the Day and post it in the c
 **WARNING - This will return over 9000 results and spam the channel for about 3 hours. I only made this command to see if I could.**
 
 `!random` - Get a random image from the archive.
+
+## Example Output
+
+![Example](example.png)
